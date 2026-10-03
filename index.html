@@ -1,240 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zambia Street Racer - Real Cars Edition</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#020305;font-family:Arial,Helvetica,sans-serif;color:white}
-#intro{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at center,#12351f 0%,#06100b 38%,#010203 75%);transition:opacity 1.2s ease,visibility 1.2s}
-#intro.hide{opacity:0;visibility:hidden;pointer-events:none}
-.logo h1{font-size:clamp(32px,8vw,78px);letter-spacing:6px;font-weight:900;text-shadow:0 0 15px rgba(0,255,100,.5)}
-.enter{margin-top:35px;padding:17px 48px;border:1px solid #20df76;background:rgba(10,40,23,.7);color:white;font-weight:bold;letter-spacing:3px;cursor:pointer;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
-#garage{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity 1s ease;background:#050708}
-#garage.show{opacity:1;visibility:visible}
-#scene{position:absolute;inset:0}
-.topbar{position:absolute;z-index:5;top:0;left:0;right:0;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:linear-gradient(180deg,rgba(0,0,0,.85),transparent)}
-.brand{font-weight:900;letter-spacing:2px}.brand span{color:#18db70}
-.cash{padding:8px 14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.55);border-radius:4px;font-weight:bold}.cash span{color:#20e276}
-.panel{position:absolute;z-index:5;top:90px;left:20px;width:340px;padding:20px;background:linear-gradient(135deg,rgba(7,12,10,.93),rgba(2,5,4,.82));border-left:3px solid #16d66b;box-shadow:0 15px 50px rgba(0,0,0,.5);backdrop-filter:blur(10px)}
-.carNav{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-.carNav button{width:42px;height:42px;background:#0b1711;border:1px solid #23432f;color:white;font-size:22px;cursor:pointer}
-.panel h2{font-size:28px;letter-spacing:1px;margin:5px 0}.panel.type{color:#16d66b;font-size:11px;letter-spacing:2px;font-weight:bold}.panel.year{color:#9ba69f;font-size:11px;letter-spacing:2px}
-.stats{margin-top:18px}.stat{margin-bottom:10px}.statRow{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;color:#bbc5bf}
-.bar{height:5px;background:#1a211e;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#087d3d,#24ed7b)}
-.actions{margin-top:18px;display:grid;gap:8px}.action{width:100%;padding:12px;background:#0b1711;color:white;border:1px solid #23432f;cursor:pointer;font-weight:bold;letter-spacing:2px}.action.primary{background:#0cbd5c;color:#00150a;border-color:#30ef83}
-#raceScreen{position:fixed;inset:0;z-index:15;background:#02060a;display:none}
-#raceScreen.active{display:block}
-#raceCanvas{width:100%;height:100%;display:block}
-#raceUI{position:absolute;inset:0;pointer-events:none}
-#goText{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);font-size:88px;font-weight:900;letter-spacing:8px;text-shadow:0 0 30px rgba(255,255,255,.8),0 0 80px rgba(20,220,100,.6)}
-.raceHud{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(0deg,rgba(0,0,0,.95),transparent);pointer-events:auto}
-.barWrap{height:10px;background:#121212;border-radius:20px;overflow:hidden;margin-bottom:10px;border:1px solid #222}
-#nitroBar{height:100%;width:100%;background:linear-gradient(90deg,#0a7a3d,#2cff88);box-shadow:0 0 15px #16d66b;transition:width.1s}
-.controls{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:10px}
-.controls button{padding:18px;border:1px solid #23432f;background:#0b1711;color:white;font-weight:900;letter-spacing:2px;border-radius:10px;touch-action:none}
-#nitroBtn{background:#0cbd5c;color:#00150a;border-color:#30ef83}
-.return{width:100%;margin-top:10px;padding:14px;background:#151515;border:1px solid #333;color:white;border-radius:10px;font-weight:bold}
-@media(max-width:700px){.panel{top:auto;bottom:70px;left:12px;right:12px;width:auto}}
-</style>
-</head>
-<body>
-
 <section id="intro">
+  <div class="introBg"></div>
+  <div class="introOverlay"></div>
+  
+  <!-- Floating particles -->
+  <div class="rain"></div>
+
   <div class="logo">
-    <div style="font-size:52px">🇿🇲</div>
-    <h1>ZAMBIA<br>STREET RACER</h1>
-    <p style="color:#aebbb3;letter-spacing:4px;font-size:12px;margin-top:10px">REAL ZAMBIAN CARS EDITION</p>
-    <button class="enter" onclick="enterGarage()">ENTER GARAGE</button>
+    <div class="flagWrap">
+      <div class="flag">🇿🇲</div>
+      <div class="flagGlow"></div>
+    </div>
+
+    <h1>ZAMBIA<br><span>STREET RACER</span></h1>
+    
+    <div class="heroCar">
+      <img src="markx-hero.jpg" alt="Mark X">
+      <div class="neonLine"></div>
+    </div>
+
+    <div class="line"></div>
+    <p>THE STREETS ARE YOURS • LUSAKA NIGHTS</p>
+    
+    <div class="carStatsPreview">
+      <span>16 CARS</span> • <span>MARK X</span> • <span>HONDA FIT</span> • <span>GT-R</span>
+    </div>
+
+    <button class="enter" onclick="enterGarage()">
+      <span>ENTER THE GARAGE</span>
+      <div class="btnGlow"></div>
+    </button>
   </div>
 </section>
 
-<section id="garage">
-  <div id="scene"></div>
-  <div class="topbar"><div class="brand">ZAMBIA <span>STREET RACER</span></div><div class="cash">💰 K <span id="cash">25,000</span></div></div>
-  <div class="panel">
-    <div class="carNav">
-      <button onclick="prevCar()">‹</button>
-      <small style="color:#7d8a82;letter-spacing:3px"><span id="carCount">1 / 10</span></small>
-      <button onclick="nextCar()">›</button>
-    </div>
-    <div class="type" id="carType">SEDAN LEGEND</div>
-    <h2 id="carName">MARK X 2010</h2>
-    <div class="year" id="carYear">2010 GRX130 • 3.5L V6 • RWD</div>
-    <div class="stats" id="stats"></div>
-    <div class="actions">
-      <button class="action" onclick="nextCar()">NEXT CAR</button>
-      <button class="action primary" onclick="startRace()">🏁 START STREET RACE</button>
-    </div>
-  </div>
-</section>
-
-<div id="raceScreen">
-  <canvas id="raceCanvas"></canvas>
-  <div id="raceUI">
-    <div id="goText">GO!</div>
-    <div class="raceHud">
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;letter-spacing:2px;margin-bottom:5px"><span id="raceCarName">MARK X</span><span id="speedText">0 KM/H</span></div>
-      <div class="barWrap"><div id="nitroBar"></div></div>
-      <div class="controls">
-        <button id="leftBtn">◀</button>
-        <button id="nitroBtn">💨 NITRO</button>
-        <button id="rightBtn">▶</button>
-      </div>
-      <button class="return" onclick="returnToGarage()">↩ RETURN TO GARAGE</button>
-    </div>
-  </div>
-</div>
-
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-<script type="module">
-import * as THREE from 'three';
-
-const CARS = [
-  {id:'markx2010', name:'MARK X 2010', type:'SEDAN KING', year:'2010 GRX130 • 3.5L V6 • RWD', color:0x0fb45f, shape:'sedan', top:94, acc:89, hand:82, nitro:78},
-  {id:'markx2015', name:'MARK X 2019', type:'FACELIFT BEAST', year:'2019 GRX133 • 3.5L V6 • 315HP', color:0xe8e8e8, shape:'sedan', top:96, acc:91, hand:85, nitro:80},
-  {id:'fit2008', name:'HONDA FIT 2008', type:'HATCHBACK POCKET ROCKET', year:'2008 GE6 • 1.5L i-VTEC • FWD', color:0x00d1ff, shape:'hatch', top:78, acc:82, hand:92, nitro:70},
-  {id:'fit2015', name:'HONDA FIT RS 2015', type:'RS TUNED', year:'2015 GK5 • 1.5L • 132HP', color:0xffd500, shape:'hatch', top:82, acc:86, hand:94, nitro:75},
-  {id:'altezza', name:'ALTEZZA RS200', type:'JDM LEGEND', year:'2003 SXE10 • 2.0L 3S-GE • RWD', color:0xffffff, shape:'sedan', top:88, acc:87, hand:90, nitro:77},
-  {id:'chaser', name:'CHASER JZX100', type:'DRIFT KING', year:'1998 Tourer V • 1JZ-GTE • 280HP', color:0x101010, shape:'sedan', top:92, acc:93, hand:84, nitro:88},
-  {id:'runx', name:'RUNX RSI 2006', type:'TOYOTA HOT HATCH', year:'2006 • 2ZZ-GE • 190HP', color:0xff1a1a, shape:'hatch', top:87, acc:90, hand:89, nitro:79},
-  {id:'wrx', name:'WRX STI 2014', type:'AWD MONSTER', year:'2014 • 2.5L Turbo • 305HP • AWD', color:0x1e40ff, shape:'sedan', top:95, acc:96, hand:93, nitro:90},
-  {id:'supra', name:'SUPRA A80', type:'2JZ LEGEND', year:'1997 • 3.0L 2JZ-GTE • 1000HP POTENTIAL', color:0xff8c00, shape:'coupe', top:98, acc:94, hand:86, nitro:95},
-  {id:'gtr', name:'GT-R R35 2012', type:'GODZILLA', year:'2012 • 3.8L Twin Turbo • 550HP • AWD', color:0x888888, shape:'coupe', top:99, acc:98, hand:95, nitro:96},
-];
-
-let currentIndex = 0;
-let scene,camera,renderer,carGroup;
-let mouseX=0,targetRotation=0,currentRotation=0;
-let raceActive=false, carX=0, speed=0, nitro=100, roadOffset=0, isNitro=false;
-let leftHeld=false, rightHeld=false;
-
-function updateUI(){
-  const c = CARS[currentIndex];
-  document.getElementById('carName').textContent=c.name;
-  document.getElementById('carType').textContent=c.type;
-  document.getElementById('carYear').textContent=c.year;
-  document.getElementById('carCount').textContent=`${currentIndex+1} / ${CARS.length}`;
-  document.getElementById('stats').innerHTML=`
-    <div class="stat"><div class="statRow"><span>TOP SPEED</span><span>${c.top}%</span></div><div class="bar"><div class="fill" style="width:${c.top}%"></div></div></div>
-    <div class="stat"><div class="statRow"><span>ACCELERATION</span><span>${c.acc}%</span></div><div class="bar"><div class="fill" style="width:${c.acc}%"></div></div></div>
-    <div class="stat"><div class="statRow"><span>HANDLING</span><span>${c.hand}%</span></div><div class="bar"><div class="fill" style="width:${c.hand}%"></div></div></div>
-    <div class="stat"><div class="statRow"><span>NITRO</span><span>${c.nitro}%</span></div><div class="bar"><div class="fill" style="width:${c.nitro}%"></div></div></div>
-  `;
-  build3DCar(c);
+<style>
+#intro{
+  position:fixed;inset:0;z-index:20;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;
+  background:#020305;
 }
-window.nextCar=()=>{ currentIndex=(currentIndex+1)%CARS.length; updateUI(); }
-window.prevCar=()=>{ currentIndex=(currentIndex-1+CARS.length)%CARS.length; updateUI(); }
-
-window.enterGarage=function(){
-  document.getElementById("intro").classList.add("hide");
-  setTimeout(()=>{ document.getElementById("garage").classList.add("show"); init3D(); updateUI(); },500);
+.introBg{
+  position:absolute;inset:0;
+  background:url('markx-hero.jpg') center/cover no-repeat;
+  filter:brightness(0.55) contrast(1.1);
+  transform:scale(1.05);
+  animation:bgZoom 12s ease-in-out infinite alternate;
 }
-
-function init3D(){
-  scene=new THREE.Scene(); scene.background=new THREE.Color(0x050708); scene.fog=new THREE.Fog(0x050708,12,38);
-  camera=new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,.1,100); camera.position.set(7,3.8,8);
-  renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2)); renderer.setSize(window.innerWidth,window.innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
-  document.getElementById("scene").appendChild(renderer.domElement);
-  const ldr=new THREE.TextureLoader(); ldr.load('https://threejs.org/examples/textures/equirectangular/pedestrian_overpass_1k.jpg',(tex)=>{ tex.mapping=THREE.EquirectangularReflectionMapping; scene.environment=tex; });
-  scene.add(new THREE.HemisphereLight(0x8aa090,0x050505,0.8));
-  const key=new THREE.SpotLight(0xffffff,400); key.position.set(2,9,5); key.angle=.6; key.penumbra=.5; key.castShadow=true; scene.add(key);
-  scene.add(new THREE.PointLight(0x0aff70,60,18).translateX(-7).translateY(3));
-  scene.add(new THREE.PointLight(0xff241f,40,15).translateX(7).translateY(2));
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60), new THREE.MeshStandardMaterial({color:0x0a0e0d, roughness:0.15, metalness:0.8})); floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
-  window.addEventListener("mousemove",e=>{ mouseX=(e.clientX/window.innerWidth-.5); targetRotation=mouseX*.55; });
-  window.addEventListener("resize",()=>{ camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); initRaceCanvas(); });
-  animate();
+@keyframes bgZoom{from{transform:scale(1.05)}to{transform:scale(1.15)}}
+.introOverlay{
+  position:absolute;inset:0;
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(22,214,107,0.25) 0%, transparent 50%),
+    radial-gradient(circle at center, #12351f 0%, #06100b 38%, #010203 85%),
+    linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85));
 }
-
-function build3DCar(data){
-  if(carGroup) scene.remove(carGroup);
-  carGroup=new THREE.Group();
-  const paint=new THREE.MeshPhysicalMaterial({color:data.color, metalness:0.85, roughness:0.2, clearcoat:1, clearcoatRoughness:0.1});
-  const black=new THREE.MeshPhysicalMaterial({color:0x0a0a0a, metalness:0.3, roughness:0.4});
-  const glass=new THREE.MeshPhysicalMaterial({color:0x11211a, transparent:true, opacity:0.6, transmission:0.2, clearcoat:1});
-  let length = data.shape==='hatch'?3.6 : data.shape==='coupe'?4.1 : 4.5;
-  let width = data.shape==='hatch'?1.9 : 2.0;
-
-  const bodyShape=new THREE.Shape();
-  bodyShape.moveTo(-length/2+0.2,-width/2); bodyShape.lineTo(length/2-0.2,-width/2); bodyShape.quadraticCurveTo(length/2,-width/2,length/2,-width/2+0.2);
-  bodyShape.lineTo(length/2,width/2-0.2); bodyShape.quadraticCurveTo(length/2,width/2,length/2-0.2,width/2);
-  bodyShape.lineTo(-length/2+0.2,width/2); bodyShape.quadraticCurveTo(-length/2,width/2,-length/2,width/2-0.2);
-  bodyShape.lineTo(-length/2,-width/2+0.2); bodyShape.quadraticCurveTo(-length/2,-width/2,-length/2+0.2,-width/2);
-  const bodyGeo=new THREE.ExtrudeGeometry(bodyShape,{depth:0.55, bevelEnabled:true, bevelThickness:0.06, bevelSize:0.06, bevelSegments:3});
-  bodyGeo.rotateY(Math.PI/2); bodyGeo.translate(0,0.55,0);
-  const body=new THREE.Mesh(bodyGeo,paint); body.castShadow=true; carGroup.add(body);
-
-  const cabinLen = data.shape==='hatch'?1.4:1.9;
-  const cabin=new THREE.Mesh(new THREE.BoxGeometry(cabinLen,0.5,1.6), black); cabin.position.set(data.shape==='hatch'?-0.3:-0.2,1.2,0); cabin.castShadow=true; carGroup.add(cabin);
-
-  const wheelPos=[[length/2-0.7,0.48,width/2-0.05],[length/2-0.7,0.48,-width/2+0.05],[-length/2+0.8,0.48,width/2-0.05],[-length/2+0.8,0.48,-width/2+0.05]];
-  wheelPos.forEach(p=>{
-    const g=new THREE.Group();
-    const tire=new THREE.Mesh(new THREE.TorusGeometry(0.42,0.14,16,32), new THREE.MeshStandardMaterial({color:0x0a0a0a, roughness:0.8})); tire.rotation.y=Math.PI/2; g.add(tire);
-    const rim=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.32,0.22,10), new THREE.MeshStandardMaterial({color:0xc0c5c2, metalness:1, roughness:0.2})); rim.rotation.z=Math.PI/2; g.add(rim);
-    g.position.set(p[0],p[1],p[2]); carGroup.add(g);
-  });
-
-  if(data.id.includes('markx')){ const sp=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.06,1.8), black); sp.position.set(-length/2-0.1,1.35,0); carGroup.add(sp); }
-  if(data.id==='supra' || data.id==='chaser'){ const wing=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.07,1.9), black); wing.position.set(-length/2-0.15,1.45,0); carGroup.add(wing); }
-
-  carGroup.position.set(0,.15,-1); scene.add(carGroup);
-}
-
-function animate(){ requestAnimationFrame(animate); if(carGroup){ currentRotation+=(targetRotation-currentRotation)*0.035; carGroup.rotation.y=currentRotation; carGroup.position.y=.15+Math.sin(Date.now()*.0015)*.012; } camera.position.x=7+mouseX*1.5; camera.lookAt(0,1,-1); if(renderer) renderer.render(scene,camera); }
-
-// RACE
-function initRaceCanvas(){ const canvas=document.getElementById('raceCanvas'); const dpr=window.devicePixelRatio||1; canvas.width=window.innerWidth*dpr; canvas.height=window.innerHeight*dpr; }
-window.startRace=function(){
-  const c=CARS[currentIndex];
-  document.getElementById('raceScreen').classList.add('active');
-  document.getElementById('raceCarName').textContent=c.name;
-  const gt=document.getElementById('goText'); gt.style.display='block'; gt.textContent='GO!'; setTimeout(()=>gt.style.display='none',900);
-  raceActive=true; carX=0; speed=6 + c.acc/12; nitro=100; roadOffset=0; isNitro=false;
-  initRaceCanvas(); requestAnimationFrame(raceLoop);
-}
-window.returnToGarage=function(){ raceActive=false; document.getElementById('raceScreen').classList.remove('active'); }
-
-function raceLoop(){
-  if(!raceActive) return;
-  const canvas=document.getElementById('raceCanvas'); const ctx=canvas.getContext('2d'); const W=canvas.width, H=canvas.height;
-  ctx.fillStyle='#0a1020'; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#e8e6d0'; ctx.shadowBlur=40; ctx.shadowColor='#fff'; ctx.beginPath(); ctx.arc(W*0.78, H*0.08, 45, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
-  const c=CARS[currentIndex];
-  const roadW=W*0.55; const roadX=(W-roadW)/2 + carX*0.25*dpr;
-  const grad=ctx.createLinearGradient(roadX,0,roadX+roadW,0); grad.addColorStop(0,'#1e1e1e'); grad.addColorStop(0.5,'#2a2a2a'); grad.addColorStop(1,'#1e1e1e');
-  ctx.fillStyle=grad; ctx.fillRect(roadX,0,roadW,H);
-  roadOffset+=speed*dpr; ctx.fillStyle='#fff';
-  for(let y=-40;y<H+40;y+=80){ const yy=(y+roadOffset)%(H+80)-40; ctx.fillRect(W/2-4*dpr, yy, 8*dpr, 35*dpr); }
-  for(let y=0;y<H;y+=24){ const yy=(y+roadOffset*1.2)%(H+24*dpr); ctx.fillStyle=(Math.floor(y/24)%2==0)?'#d00':'#fff'; ctx.fillRect(roadX-12*dpr, yy, 12*dpr, 18*dpr); ctx.fillRect(roadX+roadW, yy, 12*dpr, 18*dpr); }
-
-  const carW=78*dpr, carH=145*dpr; const cx=W/2+carX*dpr, cy=H*0.72;
-  ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(cx, cy+carH*0.5, carW*0.6, 18*dpr, 0,0,Math.PI*2); ctx.fill();
-  const paintMap={0x0fb45f:'#16d66b',0xe8e8e8:'#e8e8e8',0x00d1ff:'#00d1ff',0xffd500:'#ffd500',0xffffff:'#fff',0x101010:'#222',0xff1a1a:'#ff1a1a',0x1e40ff:'#1e40ff',0xff8c00:'#ff8c00',0x888888:'#aaa'};
-  const col=paintMap[c.color]||'#16d66b';
-  ctx.fillStyle=col; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(cx-carW/2, cy-carH/2, carW, carH, 14*dpr); else ctx.fillRect(cx-carW/2, cy-carH/2, carW, carH); ctx.fill();
-  ctx.fillStyle='#0a1a12'; ctx.fillRect(cx-carW*0.35, cy-carH*0.15, carW*0.7, carH*0.45);
-  ctx.fillStyle='#7fb8d1'; ctx.globalAlpha=0.9; ctx.fillRect(cx-carW*0.28, cy-carH*0.38, carW*0.56, carH*0.18); ctx.globalAlpha=1;
-  ctx.fillStyle='#fff'; ctx.shadowBlur=15*dpr; ctx.shadowColor='#fff'; ctx.fillRect(cx-carW*0.3, cy-carH*0.5-4*dpr, 18*dpr, 8*dpr); ctx.fillRect(cx+carW*0.3-18*dpr, cy-carH*0.5-4*dpr, 18*dpr, 8*dpr); ctx.shadowBlur=0;
-  if(isNitro){ ctx.fillStyle=`hsl(${30+Math.random()*20},100%,60%)`; ctx.beginPath(); ctx.moveTo(cx-12*dpr, cy+carH*0.5); ctx.lineTo(cx, cy+carH*0.5+30*dpr+Math.random()*20*dpr); ctx.lineTo(cx+12*dpr, cy+carH*0.5); ctx.fill(); }
-
-  document.getElementById('nitroBar').style.width=nitro+'%';
-  document.getElementById('speedText').textContent=Math.floor(speed*18)+' KM/H';
-  speed=Math.min(22 + c.top/10, speed+0.02);
-  if(isNitro && nitro>0){ speed+=0.28; nitro-=0.7; } else if(nitro<100) nitro+=0.15;
-  requestAnimationFrame(raceLoop);
-}
-
-// Controls
-function bindHold(el, onDown, onUp){ el.addEventListener('touchstart', e=>{ e.preventDefault(); onDown(); }); el.addEventListener('touchend', onUp); el.addEventListener('mousedown', onDown); el.addEventListener('mouseup', onUp); el.addEventListener('mouseleave', onUp); }
-bindHold(document.getElementById('leftBtn'), ()=>leftHeld=true, ()=>leftHeld=false);
-bindHold(document.getElementById('rightBtn'), ()=>rightHeld=true, ()=>rightHeld=false);
-bindHold(document.getElementById('nitroBtn'), ()=>isNitro=true, ()=>isNitro=false);
-setInterval(()=>{ if(leftHeld) carX-=10; if(rightHeld) carX+=10; carX=Math.max(-200,Math.min(200,carX)); },16);
-
-updateUI();
-</script>
-</body>
-</html>
+.logo{position:relative;z-index:2;animation:logoIn 1.5s ease forwards;padding:20px}
+.flagWrap{position:relative;display:inline-block}
+.flag{font-size:58px;margin-bottom:15px;filter:drop-shadow(0 0 15px rgba(22,214,107,0.6))}
+.flagGlow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:rgba(22,214,107,0.3);filter:blur(20px);border-radius:50%}
+.logo h1{font-size:clamp(38px,8vw,88px);letter-spacing:8px;font-weight:900;line-height:0.9;text-shadow:0 0 15px rgba(0,255,100,.5),0 0 50px rgba(0,255,100,.25)}
+.logo h1 span{color:#16d66b;text-shadow:0 0 20px #16d66b}
+.heroCar{width:min(420px,85vw);margin:18px auto 10px;position:relative}
+.heroCar img{width:100%;border-radius:12px;border:1px solid rgba(22,214,107,0.3);box-shadow:0 15px 60px rgba(0,0,0,0.8),0 0 40px rgba(22,214,107,0.2)}
+.neonLine{position:absolute;bottom:-6px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,#16d66b,transparent);box-shadow:0 0 20px #16d66b}
+.line{width:240px;height:3px;margin:18px auto;background:linear-gradient(90deg,transparent,#16d66b,transparent);box-shadow:0 0 15px #16d66b}
+.logo p{color:#aebbb3;letter-spacing:5px;font-size:12px}
+.carStatsPreview{margin-top:12px;color:#5a6e62;font-size:10px;letter-spacing:3px}
+.carStatsPreview span{color:#8da89a}
+.enter{position:relative;margin-top:28px;padding:18px 52px;border:1px solid #20df76;background:rgba(10,40,23,.85);color:white;font-weight:900;letter-spacing:3px;cursor:pointer;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);overflow:hidden;transition:.3s}
+.enter:hover{background:#13b85d;box-shadow:0 0 40px rgba(20,220,100,.6);transform:scale(1.05)}
+.btnGlow{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transform:translateX(-100%);animation:btnShine 3s infinite}
+@keyframes btnShine{100%{transform:translateX(100%)}}
+</style>

@@ -1,25 +1,1341 @@
-<audio id="gameMusic" loop>
-  <source src="it-over.mp3" type="audio/mpeg">
-</audio>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zambia Street Racer</title>
 
-<button onclick="toggleMusic()" id="musicBtn">🎵 MUSIC</button>
-
-<script>
-const music = document.getElementById("gameMusic");
-const musicBtn = document.getElementById("musicBtn");
-
-function startMusic() {
-  music.volume = 0.45;
-  music.play().catch(() => {});
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-function toggleMusic() {
-  if (music.paused) {
-    music.play();
-    musicBtn.textContent = "🔊 MUSIC";
-  } else {
-    music.pause();
-    musicBtn.textContent = "🔇 MUSIC";
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#020305;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+}
+
+/* ================= INTRO ================= */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:
+    radial-gradient(circle at center,#12351f 0%,#06100b 38%,#010203 75%);
+  transition:opacity 1.2s ease,visibility 1.2s;
+}
+
+#intro.hide{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.logo{
+  animation:logoIn 1.5s ease forwards;
+}
+
+.flag{
+  font-size:52px;
+  margin-bottom:15px;
+}
+
+.logo h1{
+  font-size:clamp(38px,8vw,88px);
+  letter-spacing:8px;
+  font-weight:900;
+  text-shadow:
+    0 0 15px rgba(0,255,100,.5),
+    0 0 50px rgba(0,255,100,.25);
+}
+
+.logo .line{
+  width:240px;
+  height:3px;
+  margin:18px auto;
+  background:linear-gradient(90deg,transparent,#16d66b,transparent);
+}
+
+.logo p{
+  color:#aebbb3;
+  letter-spacing:5px;
+  font-size:13px;
+}
+
+.enter{
+  margin-top:45px;
+  padding:17px 48px;
+  border:1px solid #20df76;
+  background:rgba(10,40,23,.7);
+  color:white;
+  font-weight:bold;
+  letter-spacing:3px;
+  cursor:pointer;
+  transition:.3s;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+
+.enter:hover{
+  background:#13b85d;
+  box-shadow:0 0 35px rgba(20,220,100,.45);
+  transform:scale(1.04);
+}
+
+@keyframes logoIn{
+  from{
+    opacity:0;
+    transform:scale(.8) translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
   }
 }
+
+/* ================= GARAGE ================= */
+
+#garage{
+  position:fixed;
+  inset:0;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity 1s ease;
+  background:#050708;
+}
+
+#garage.show{
+  opacity:1;
+  visibility:visible;
+}
+
+/* 3D scene */
+
+#scene{
+  position:absolute;
+  inset:0;
+}
+
+/* garage UI */
+
+.topbar{
+  position:absolute;
+  z-index:5;
+  top:0;
+  left:0;
+  right:0;
+  height:78px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  background:linear-gradient(180deg,rgba(0,0,0,.85),rgba(0,0,0,0));
+  pointer-events:none;
+}
+
+.brand{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+.brand span{
+  color:#18db70;
+}
+
+.cash{
+  pointer-events:auto;
+  padding:10px 18px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.55);
+  border-radius:4px;
+  font-weight:bold;
+}
+
+.cash span{
+  color:#20e276;
+}
+
+.panel{
+  position:absolute;
+  z-index:5;
+  top:100px;
+  left:28px;
+  width:310px;
+  padding:24px;
+  background:
+    linear-gradient(135deg,rgba(7,12,10,.93),rgba(2,5,4,.82));
+  border-left:3px solid #16d66b;
+  box-shadow:0 15px 50px rgba(0,0,0,.5);
+  backdrop-filter:blur(10px);
+}
+
+.panel small{
+  color:#7d8a82;
+  letter-spacing:3px;
+}
+
+.panel h2{
+  margin:8px 0 3px;
+  font-size:31px;
+  letter-spacing:2px;
+}
+
+.panel .sub{
+  color:#9ba69f;
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.stats{
+  margin-top:22px;
+}
+
+.stat{
+  margin-bottom:13px;
+}
+
+.statRow{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  margin-bottom:5px;
+  color:#bbc5bf;
+}
+
+.bar{
+  height:5px;
+  background:#1a211e;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  background:linear-gradient(90deg,#087d3d,#24ed7b);
+  box-shadow:0 0 10px rgba(25,230,110,.5);
+}
+
+.actions{
+  margin-top:25px;
+  display:grid;
+  gap:10px;
+}
+
+.action{
+  width:100%;
+  padding:14px;
+  background:#0b1711;
+  color:white;
+  border:1px solid #23432f;
+  cursor:pointer;
+  font-weight:bold;
+  letter-spacing:2px;
+  transition:.25s;
+}
+
+.action:hover{
+  border-color:#20df76;
+  background:#102c1b;
+}
+
+.action.primary{
+  background:#0cbd5c;
+  color:#00150a;
+  border-color:#30ef83;
+}
+
+.action.primary:hover{
+  background:#20ed7a;
+}
+
+/* bottom info */
+
+.bottom{
+  position:absolute;
+  z-index:5;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:10px;
+  color:#89958e;
+  font-size:11px;
+  letter-spacing:2px;
+  text-align:center;
+}
+
+.hint{
+  padding:9px 15px;
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+/* music */
+
+.music{
+  position:absolute;
+  z-index:6;
+  right:25px;
+  bottom:25px;
+  padding:12px 18px;
+  background:rgba(0,0,0,.7);
+  border:1px solid rgba(255,255,255,.15);
+  cursor:pointer;
+  color:white;
+}
+
+/* mobile */
+
+@media(max-width:700px){
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .panel{
+    top:auto;
+    bottom:70px;
+    left:12px;
+    right:12px;
+    width:auto;
+    padding:17px;
+  }
+
+  .panel h2{
+    font-size:24px;
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px 15px;
+    margin-top:15px;
+  }
+
+  .stat{
+    margin:0;
+  }
+
+  .actions{
+    margin-top:14px;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .action.primary{
+    grid-column:span 2;
+  }
+
+  .bottom{
+    display:none;
+  }
+
+  .music{
+    top:85px;
+    bottom:auto;
+    right:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= INTRO ================= -->
+
+<section id="intro">
+  <div class="logo">
+
+    <div class="flag">🇿🇲</div>
+
+    <h1>ZAMBIA<br>STREET RACER</h1>
+
+    <div class="line"></div>
+
+    <p>THE STREETS ARE YOURS</p>
+
+    <button class="enter" onclick="enterGarage()">
+      ENTER THE GARAGE
+    </button>
+
+  </div>
+</section>
+
+
+<!-- ================= GARAGE ================= -->
+
+<section id="garage">
+
+  <div id="scene"></div>
+
+  <div class="topbar">
+    <div class="brand">
+      ZAMBIA <span>STREET RACER</span>
+    </div>
+
+    <div class="cash">
+      💰 K <span>5,000</span>
+    </div>
+  </div>
+
+
+  <div class="panel">
+
+    <small>SELECTED VEHICLE</small>
+
+    <h2>ZR-X</h2>
+
+    <div class="sub">
+      STREET PERFORMANCE
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="statRow">
+          <span>TOP SPEED</span>
+          <span>92%</span>
+        </div>
+        <div class="bar">
+          <div class="fill" style="width:92%"></div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statRow">
+          <span>ACCELERATION</span>
+          <span>88%</span>
+        </div>
+        <div class="bar">
+          <div class="fill" style="width:88%"></div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statRow">
+          <span>HANDLING</span>
+          <span>84%</span>
+        </div>
+        <div class="bar">
+          <div class="fill" style="width:84%"></div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statRow">
+          <span>NITRO</span>
+          <span>76%</span>
+        </div>
+        <div class="bar">
+          <div class="fill" style="width:76%"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button class="action">
+        CUSTOMIZE
+      </button>
+
+      <button class="action">
+        PERFORMANCE
+      </button>
+
+      <button class="action primary" onclick="startRace()">
+        🏁 START STREET RACE
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="bottom">
+
+    <div class="hint">
+      🖱️ DRAG — LOOK AROUND
+    </div>
+
+    <div class="hint">
+      🖱️ SCROLL — ZOOM
+    </div>
+
+  </div>
+
+
+  <button class="music" onclick="toggleMusic()">
+    🔇 MUSIC
+  </button>
+
+</section>
+
+
+<!-- Three.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+let scene;
+let camera;
+let renderer;
+let car;
+let garageGroup;
+
+let mouseX = 0;
+let mouseY = 0;
+
+let targetRotation = 0;
+let currentRotation = 0;
+
+let music = null;
+
+
+/* ================= ENTER GARAGE ================= */
+
+function enterGarage(){
+
+  document.getElementById("intro").classList.add("hide");
+
+  setTimeout(()=>{
+
+    document.getElementById("garage").classList.add("show");
+
+    init3D();
+
+  },500);
+}
+
+
+/* ================= THREE JS ================= */
+
+function init3D(){
+
+  scene = new THREE.Scene();
+
+  scene.background = new THREE.Color(0x050708);
+
+  scene.fog = new THREE.Fog(
+    0x050708,
+    12,
+    38
+  );
+
+
+  /* CAMERA */
+
+  camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    .1,
+    100
+  );
+
+  camera.position.set(
+    8,
+    4.5,
+    10
+  );
+
+
+  /* RENDERER */
+
+  renderer = new THREE.WebGLRenderer({
+    antialias:true,
+    powerPreference:"high-performance"
+  });
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+  );
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
+
+  renderer.shadowMap.enabled = true;
+
+  renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+  document
+    .getElementById("scene")
+    .appendChild(renderer.domElement);
+
+
+  /* LIGHTS */
+
+  const ambient =
+    new THREE.HemisphereLight(
+      0x8aa090,
+      0x050505,
+      1.2
+    );
+
+  scene.add(ambient);
+
+
+  const keyLight =
+    new THREE.SpotLight(
+      0xffffff,
+      180
+    );
+
+  keyLight.position.set(
+    2,
+    9,
+    5
+  );
+
+  keyLight.angle=.55;
+  keyLight.penumbra=.5;
+  keyLight.castShadow=true;
+
+  scene.add(keyLight);
+
+
+  const greenLight =
+    new THREE.PointLight(
+      0x0aff70,
+      80,
+      18
+    );
+
+  greenLight.position.set(
+    -7,
+    3,
+    1
+  );
+
+  scene.add(greenLight);
+
+
+  const redLight =
+    new THREE.PointLight(
+      0xff241f,
+      55,
+      15
+    );
+
+  redLight.position.set(
+    7,
+    2,
+    -5
+  );
+
+  scene.add(redLight);
+
+
+  /* FLOOR */
+
+  const floorMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0x080b0a,
+      roughness:.32,
+      metalness:.55
+    });
+
+  const floor =
+    new THREE.Mesh(
+      new THREE.PlaneGeometry(
+        60,
+        60
+      ),
+      floorMaterial
+    );
+
+  floor.rotation.x=-Math.PI/2;
+
+  floor.receiveShadow=true;
+
+  scene.add(floor);
+
+
+  /* FLOOR LINES */
+
+  for(let i=-15;i<=15;i+=3){
+
+    const line =
+      new THREE.Mesh(
+        new THREE.PlaneGeometry(
+          .025,
+          50
+        ),
+        new THREE.MeshBasicMaterial({
+          color:0x183323
+        })
+      );
+
+    line.rotation.x=-Math.PI/2;
+
+    line.position.x=i;
+
+    line.position.y=.01;
+
+    scene.add(line);
+  }
+
+
+  /* WALL */
+
+  const wall =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        40,
+        15,
+        .5
+      ),
+      new THREE.MeshStandardMaterial({
+        color:0x090c0b,
+        roughness:.8
+      })
+    );
+
+  wall.position.set(
+    0,
+    7,
+    -8
+  );
+
+  wall.receiveShadow=true;
+
+  scene.add(wall);
+
+
+  /* GARAGE CEILING LIGHTS */
+
+  for(let x=-10;x<=10;x+=5){
+
+    const light =
+      new THREE.PointLight(
+        0xffffff,
+        25,
+        9
+      );
+
+    light.position.set(
+      x,
+      8,
+      -1
+    );
+
+    scene.add(light);
+
+    const bulb =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          2.2,
+          .06,
+          .3
+        ),
+        new THREE.MeshBasicMaterial({
+          color:0xffffff
+        })
+      );
+
+    bulb.position.set(
+      x,
+      7.9,
+      -1
+    );
+
+    scene.add(bulb);
+  }
+
+
+  /* ZAMBIA STREET RACER BACK WALL */
+
+  createWallLogo();
+
+
+  /* CAR */
+
+  car = createCar();
+
+  car.position.set(
+    0,
+    .15,
+    -1
+  );
+
+  scene.add(car);
+
+
+  /* CAMERA MOUSE */
+
+  window.addEventListener(
+    "mousemove",
+    onMouseMove
+  );
+
+  window.addEventListener(
+    "resize",
+    resize
+  );
+
+
+  animate();
+}
+
+
+/* ================= CAR ================= */
+
+function createCar(){
+
+  const group =
+    new THREE.Group();
+
+
+  /* BODY */
+
+  const bodyMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0x0d7d43,
+      metalness:.85,
+      roughness:.18
+    });
+
+
+  const body =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        4.4,
+        .72,
+        2
+      ),
+      bodyMaterial
+    );
+
+  body.position.y=.95;
+
+  body.castShadow=true;
+
+  group.add(body);
+
+
+  /* LOWER BODY */
+
+  const lower =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        4.65,
+        .35,
+        2.05
+      ),
+      bodyMaterial
+    );
+
+  lower.position.y=.7;
+
+  lower.castShadow=true;
+
+  group.add(lower);
+
+
+  /* HOOD */
+
+  const hood =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        1.7,
+        .18,
+        1.82
+      ),
+      bodyMaterial
+    );
+
+  hood.position.set(
+    1.35,
+    1.38,
+    0
+  );
+
+  hood.castShadow=true;
+
+  group.add(hood);
+
+
+  /* ROOF */
+
+  const roofMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0x101513,
+      metalness:.7,
+      roughness:.2
+    });
+
+
+  const roof =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        2.05,
+        .55,
+        1.75
+      ),
+      roofMaterial
+    );
+
+  roof.position.set(
+    -.35,
+    1.55,
+    0
+  );
+
+  roof.castShadow=true;
+
+  group.add(roof);
+
+
+  /* WINDSCREEN */
+
+  const glassMaterial =
+    new THREE.MeshPhysicalMaterial({
+      color:0x06100d,
+      metalness:.2,
+      roughness:.05,
+      transparent:true,
+      opacity:.75
+    });
+
+
+  const windshield =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        .12,
+        .62,
+        1.6
+      ),
+      glassMaterial
+    );
+
+  windshield.rotation.z=-.35;
+
+  windshield.position.set(
+    .72,
+    1.55,
+    0
+  );
+
+  group.add(windshield);
+
+
+  /* REAR GLASS */
+
+  const rearGlass =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        .12,
+        .62,
+        1.6
+      ),
+      glassMaterial
+    );
+
+  rearGlass.rotation.z=.35;
+
+  rearGlass.position.set(
+    -1.35,
+    1.55,
+    0
+  );
+
+  group.add(rearGlass);
+
+
+  /* WHEELS */
+
+  const wheelPositions=[
+    [1.45,.48,1.05],
+    [1.45,.48,-1.05],
+    [-1.45,.48,1.05],
+    [-1.45,.48,-1.05]
+  ];
+
+
+  wheelPositions.forEach(pos=>{
+
+    const tire =
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          .48,
+          .48,
+          .35,
+          32
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x030303,
+          roughness:.8
+        })
+      );
+
+    tire.rotation.z=Math.PI/2;
+
+    tire.position.set(
+      pos[0],
+      pos[1],
+      pos[2]
+    );
+
+    tire.castShadow=true;
+
+    group.add(tire);
+
+
+    const rim =
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          .27,
+          .27,
+          .37,
+          24
+        ),
+        new THREE.MeshStandardMaterial({
+          color:0x777d7a,
+          metalness:1,
+          roughness:.22
+        })
+      );
+
+    rim.rotation.z=Math.PI/2;
+
+    rim.position.set(
+      pos[0],
+      pos[1],
+      pos[2]
+    );
+
+    group.add(rim);
+
+  });
+
+
+  /* HEADLIGHTS */
+
+  const headlightMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0xffffff,
+      emissive:0xffffff,
+      emissiveIntensity:4
+    });
+
+
+  [-.68,.68].forEach(z=>{
+
+    const light =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          .12,
+          .2,
+          .48
+        ),
+        headlightMaterial
+      );
+
+    light.position.set(
+      2.23,
+      1.02,
+      z
+    );
+
+    group.add(light);
+
+  });
+
+
+  /* TAIL LIGHTS */
+
+  const tailMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0x7a0505,
+      emissive:0xff0000,
+      emissiveIntensity:2
+    });
+
+
+  [-.7,.7].forEach(z=>{
+
+    const tail =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          .12,
+          .2,
+          .42
+        ),
+        tailMaterial
+      );
+
+    tail.position.set(
+      -2.24,
+      1.05,
+      z
+    );
+
+    group.add(tail);
+
+  });
+
+
+  /* SIDE MIRRORS */
+
+  const mirrorMaterial =
+    new THREE.MeshStandardMaterial({
+      color:0x07100b,
+      metalness:.8,
+      roughness:.2
+    });
+
+
+  [-1.04,1.04].forEach(z=>{
+
+    const mirror =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          .35,
+          .15,
+          .22
+        ),
+        mirrorMaterial
+      );
+
+    mirror.position.set(
+      .42,
+      1.45,
+      z
+    );
+
+    group.add(mirror);
+
+  });
+
+
+  return group;
+}
+
+
+/* ================= WALL LOGO ================= */
+
+function createWallLogo(){
+
+  const canvas =
+    document.createElement("canvas");
+
+  canvas.width=1024;
+  canvas.height=256;
+
+  const ctx=canvas.getContext("2d");
+
+  ctx.fillStyle="#080c0a";
+
+  ctx.fillRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  ctx.font="900 72px Arial";
+
+  ctx.textAlign="center";
+
+  ctx.fillStyle="#16d66b";
+
+  ctx.fillText(
+    "ZAMBIA STREET RACER",
+    512,
+    115
+  );
+
+  ctx.font="28px Arial";
+
+  ctx.fillStyle="#9aa69f";
+
+  ctx.fillText(
+    "THE STREETS ARE YOURS",
+    512,
+    165
+  );
+
+
+  const texture =
+    new THREE.CanvasTexture(canvas);
+
+
+  const material =
+    new THREE.MeshBasicMaterial({
+      map:texture
+    });
+
+
+  const logo =
+    new THREE.Mesh(
+      new THREE.PlaneGeometry(
+        8,
+        2
+      ),
+      material
+    );
+
+  logo.position.set(
+    0,
+    4.7,
+    -7.7
+  );
+
+  scene.add(logo);
+}
+
+
+/* ================= CAMERA ================= */
+
+function onMouseMove(e){
+
+  mouseX =
+    (e.clientX/window.innerWidth-.5);
+
+  mouseY =
+    (e.clientY/window.innerHeight-.5);
+
+  targetRotation =
+    mouseX*.55;
+}
+
+
+/* ================= ANIMATION ================= */
+
+function animate(){
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  if(car){
+
+    currentRotation +=
+      (targetRotation-currentRotation)
+      *0.035;
+
+    car.rotation.y =
+      currentRotation;
+
+
+    car.position.y =
+      .15+
+      Math.sin(Date.now()*.0015)
+      *.015;
+
+  }
+
+
+  camera.position.x =
+    8+
+    mouseX*1.8;
+
+  camera.position.y =
+    4.5-
+    mouseY*.8;
+
+  camera.lookAt(
+    0,
+    1,
+    -1
+  );
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+
+/* ================= RESIZE ================= */
+
+function resize(){
+
+  if(!camera || !renderer)return;
+
+  camera.aspect =
+    window.innerWidth/
+    window.innerHeight;
+
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
+}
+
+
+/* ================= RACE ================= */
+
+function startRace(){
+
+  alert(
+    "STREET RACE\n\n" +
+    "3D RACE ENGINE READY.\n\n" +
+    "Next: Lusaka night circuit."
+  );
+}
+
+
+/* ================= MUSIC ================= */
+
+function toggleMusic(){
+
+  /*
+   * Add your legally licensed audio file
+   * as "it-over.mp3" in this repository.
+   */
+
+  if(!music){
+
+    music =
+      new Audio("it-over.mp3");
+
+    music.loop=true;
+
+    music.volume=.45;
+  }
+
+
+  if(music.paused){
+
+    music.play().catch(()=>{
+
+      alert(
+        "Add your licensed it-over.mp3 file to the repository first."
+      );
+
+    });
+
+    document.querySelector(".music")
+      .textContent="🔊 MUSIC";
+
+  }else{
+
+    music.pause();
+
+    document.querySelector(".music")
+      .textContent="🔇 MUSIC";
+
+  }
+}
+
 </script>
+
+</body>
+</html>

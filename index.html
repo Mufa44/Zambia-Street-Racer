@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Zambia Street Racer 🇿🇲</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#05070a;
+color:white;
+overflow-x:hidden;
+}
+
+header{
+padding:16px;
+text-align:center;
+background:linear-gradient(135deg,#087f3f,#04351d);
+border-bottom:2px solid #12b968;
+}
+
+header h1{margin:0;font-size:25px}
+header p{margin:5px 0 0;color:#b9f5d2}
+
+.screen{
+max-width:500px;
+margin:auto;
+padding:18px;
+}
+
+.panel{
+background:#10151b;
+border:1px solid #26313a;
+border-radius:18px;
+padding:18px;
+margin-bottom:15px;
+box-shadow:0 10px 30px #0008;
+}
+
+.hidden{display:none!important}
+
+button{
+border:0;
+border-radius:12px;
+padding:14px 18px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.primary{
+width:100%;
+background:#0aa957;
+color:white;
+}
+
+.secondary{
+background:#202a32;
+color:white;
+}
+
+.car-list{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.car{
+background:#171e25;
+border:2px solid #29343d;
+border-radius:15px;
+padding:12px;
+text-align:center;
+}
+
+.car.selected{
+border-color:#0aa957;
+box-shadow:0 0 15px #0aa95766;
+}
+
+.car-body{
+height:70px;
+width:45px;
+margin:5px auto 12px;
+border-radius:10px 10px 7px 7px;
+position:relative;
+}
+
+.car-body:before{
+content:"";
+position:absolute;
+left:6px;
+right:6px;
+top:10px;
+height:22px;
+background:#8ccbd6;
+border-radius:6px;
+}
+
+.green{background:#0aa957}
+.red{background:#c83232}
+.blue{background:#2879d8}
+.black{background:#555}
+
+.stats{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#b9c4cc;
+margin-top:8px;
+}
+
+.game{
+position:relative;
+height:620px;
+max-height:75vh;
+overflow:hidden;
+border-radius:20px;
+background:#111;
+border:2px solid #29343d;
+}
+
+.sky{
+position:absolute;
+inset:0 0 62% 0;
+background:linear-gradient(#09121d,#26384a);
+}
+
+.city{
+position:absolute;
+bottom:62%;
+left:0;
+right:0;
+height:100px;
+background:
+linear-gradient(90deg,#111 0 8%,transparent 8% 13%,#181818 13% 22%,transparent 22% 27%,#101010 27% 40%,transparent 40% 46%,#191919 46% 58%,transparent 58% 65%,#101010 65% 77%,transparent 77% 84%,#181818 84%);
+opacity:.9;
+}
+
+.road{
+position:absolute;
+left:9%;
+right:9%;
+top:30%;
+bottom:0;
+background:#292929;
+overflow:hidden;
+}
+
+.road:before{
+content:"";
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+top:-100%;
+width:7px;
+height:220%;
+background:repeating-linear-gradient(
+to bottom,
+white 0 45px,
+transparent 45px 90px
+);
+animation:roadMove .45s linear infinite;
+}
+
+@keyframes roadMove{
+from{transform:translate(-50%,-45px)}
+to{transform:translate(-50%,45px)}
+}
+
+.roadEdge{
+position:absolute;
+top:0;
+bottom:0;
+width:7px;
+background:repeating-linear-gradient(
+to bottom,
+#d52e2e 0 30px,
+#fff 30px 60px
+);
+}
+
+.edgeLeft{left:0}
+.edgeRight{right:0}
+
+.player{
+position:absolute;
+bottom:8%;
+left:50%;
+transform:translateX(-50%);
+width:55px;
+height:95px;
+border-radius:12px 12px 8px 8px;
+background:#0aa957;
+z-index:5;
+box-shadow:0 8px 15px #000;
+}
+
+.player:before{
+content:"";
+position:absolute;
+left:7px;
+right:7px;
+top:13px;
+height:27px;
+background:#8fcbd4;
+border-radius:6px;
+}
+
+.player:after{
+content:"🇿🇲";
+position:absolute;
+bottom:8px;
+left:50%;
+transform:translateX(-50%);
+font-size:17px;
+}
+
+.enemy{
+position:absolute;
+width:51px;
+height:88px;
+border-radius:11px;
+background:#d7d7d7;
+z-index:4;
+box-shadow:0 7px 12px #000;
+}
+
+.enemy:before{
+content:"";
+position:absolute;
+left:7px;
+right:7px;
+top:12px;
+height:24px;
+background:#7caab4;
+border-radius:6px;
+}
+
+.hud{
+position:absolute;
+z-index:10;
+top:10px;
+left:10px;
+right:10px;
+display:flex;
+justify-content:space-between;
+gap:5px;
+}
+
+.hud span{
+background:#000b;
+padding:8px;
+border-radius:9px;
+font-size:13px;
+}
+
+.nitro{
+position:absolute;
+z-index:10;
+bottom:12px;
+left:15px;
+right:15px;
+height:12px;
+background:#111c;
+border-radius:20px;
+overflow:hidden;
+border:1px solid #ffffff33;
+}
+
+.nitroFill{
+height:100%;
+width:100%;
+background:#08a9ff;
+transition:.1s;
+}
+
+.controls{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+margin-top:12px;
+}
+
+.controls button{
+height:58px;
+background:#182129;
+color:white;
+font-size:20px;
+}
+
+.controls button:active{
+background:#087f3f;
+}
+
+.boost{
+background:#0879bd!important;
+}
+
+.money{
+color:#ffd34d;
+font-weight:bold;
+}
+
+.upgrade{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:10px 0;
+padding:12px;
+background:#171e25;
+border-radius:12px;
+}
+
+.upgrade button{
+padding:9px 12px;
+background:#0aa957;
+color:white;
+}
+
+.notice{
+text-align:center;
+color:#9baab5;
+font-size:14px;
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🇿🇲 Zambia Street Racer</h1>
+<p>Street racing starts here.</p>
+</header>
+
+<div class="screen">
+
+<!-- GARAGE -->
+<section id="garage">
+
+<div class="panel">
+<h2>🏎️ Garage</h2>
+<p>Choose your car.</p>
+
+<div class="car-list">
+
+<div class="car selected" data-car="green">
+<div class="car-body green"></div>
+<strong>ZR-01</strong>
+<div class="stats">
+<span>Speed 72</span>
+<span>Handling 70</span>
+</div>
+</div>
+
+<div class="car" data-car="red">
+<div class="car-body red"></div>
+<strong>ZR-02</strong>
+<div class="stats">
+<span>Speed 82</span>
+<span>Handling 63</span>
+</div>
+</div>
+
+<div class="car" data-car="blue">
+<div class="car-body blue"></div>
+<strong>ZR-03</strong>
+<div class="stats">
+<span>Speed 90</span>
+<span>Handling 75</span>
+</div>
+</div>
+
+<div class="car" data-car="black">
+<div class="car-body black"></div>
+<strong>ZR-X</strong>
+<div class="stats">
+<span>Speed 96</span>
+<span>Handling 88</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="panel">
+<h3>💰 Wallet</h3>
+<div class="money">K <span id="money">500</span></div>
+</div>
+
+<div class="panel">
+<h3>🔧 Upgrades</h3>
+
+<div class="upgrade">
+<div>⚡ Engine <span id="engineLevel">1</span></div>
+<button id="engineBtn">K250</button>
+</div>
+
+<div class="upgrade">
+<div>🛞 Handling <span id="handlingLevel">1</span></div>
+<button id="handlingBtn">K250</button>
+</div>
+
+<div class="upgrade">
+<div>💨 Nitro <span id="nitroLevel">1</span></div>
+<button id="nitroBtn">K250</button>
+</div>
+</div>
+
+<button class="primary" id="raceBtn">
+🏁 START STREET RACE
+</button>
+
+</section>
+
+<!-- RACE -->
+<section id="race" class="hidden">
+
+<div class="game" id="game">
+
+<div class="sky"></div>
+<div class="city"></div>
+
+<div class="road">
+
+<div class="roadEdge edgeLeft"></div>
+<div class="roadEdge edgeRight"></div>
+
+</div>
+
+<div class="hud">
+<span>🏁 LAP <b id="lap">1</b>/3</span>
+<span>⚡ <b id="speed">0</b> KM/H</span>
+<span>💰 K<b id="raceMoney">0</b></span>
+</div>
+
+<div class="player" id="player"></div>
+
+<div class="nitro">
+<div class="nitroFill" id="nitroFill"></div>
+</div>
+
+</div>
+
+<div class="controls">
+
+<button id="left">◀</button>
+
+<button class="boost" id="boost">
+💨
+</button>
+
+<button id="right">▶</button>
+
+</div>
+
+<p class="notice" id="status">
+Avoid traffic and use nitro to get ahead.
+</p>
+
+<button class="secondary" id="garageBtn" style="width:100%;margin-top:10px">
+🚗 Return to Garage
+</button>
+
+</section>
+
+</div>
+
+<script>
+
+const garage=document.getElementById("garage");
+const race=document.getElementById("race");
+const raceBtn=document.getElementById("raceBtn");
+const garageBtn=document.getElementById("garageBtn");
+
+const game=document.getElementById("game");
+const player=document.getElementById("player");
+
+const speedEl=document.getElementById("speed");
+const lapEl=document.getElementById("lap");
+const raceMoney=document.getElementById("raceMoney");
+const statusEl=document.getElementById("status");
+const nitroFill=document.getElementById("nitroFill");
+
+let selectedCar="green";
+
+let money=500;
+
+let engine=1;
+let handling=1;
+let nitroLevel=1;
+
+let x=50;
+let speed=0;
+let nitro=100;
+let lap=1;
+let earned=0;
+
+let running=false;
+let lastTime=0;
+
+let enemies=[];
+
+const carStats={
+green:{speed:72,handling:70},
+red:{speed:82,handling:63},
+blue:{speed:90,handling:75},
+black:{speed:96,handling:88}
+};
+
+document.querySelectorAll(".car").forEach(car=>{
+
+car.addEventListener("click",()=>{
+
+document.querySelectorAll(".car").forEach(c=>c.classList.remove("selected"));
+
+car.classList.add("selected");
+
+selectedCar=car.dataset.car;
+
+});
+
+});
+
+function updateMoney(){
+
+document.getElementById("money").textContent=money;
+
+}
+
+function buyUpgrade(type){
+
+if(money<250){
+
+alert("You need more money.");
+
+return;
+
+}
+
+money-=250;
+
+if(type==="engine"){
+
+engine++;
+
+document.getElementById("engineLevel").textContent=engine;
+
+}
+
+if(type==="handling"){
+
+handling++;
+
+document.getElementById("handlingLevel").textContent=handling;
+
+}
+
+if(type==="nitro"){
+
+nitroLevel++;
+
+document.getElementById("nitroLevel").textContent=nitroLevel;
+
+}
+
+updateMoney();
+
+}
+
+document.getElementById("engineBtn")
+.addEventListener("click",()=>buyUpgrade("engine"));
+
+document.getElementById("handlingBtn")
+.addEventListener("click",()=>buyUpgrade("handling"));
+
+document.getElementById("nitroBtn")
+.addEventListener("click",()=>buyUpgrade("nitro"));
+
+function startRace(){
+
+garage.classList.add("hidden");
+
+race.classList.remove("hidden");
+
+running=true;
+
+x=50;
+
+speed=0;
+
+nitro=100;
+
+lap=1;
+
+earned=0;
+
+enemies.forEach(e=>e.el.remove());
+
+enemies=[];
+
+player.style.left=x+"%";
+
+lastTime=performance.now();
+
+statusEl.textContent="Race started!";
+
+requestAnimationFrame(gameLoop);
+
+}
+
+raceBtn.addEventListener("click",startRace);
+
+garageBtn.addEventListener("click",()=>{
+
+running=false;
+
+race.classList.add("hidden");
+
+garage.classList.remove("hidden");
+
+});
+
+function move(direction){
+
+if(!running)return;
+
+let handlingPower=1.5+(handling*.35);
+
+x+=direction*handlingPower;
+
+x=Math.max(18,Math.min(82,x));
+
+player.style.left=x+"%";
+
+}
+
+document.getElementById("left")
+.addEventListener("pointerdown",()=>move(-1));
+
+document.getElementById("right")
+.addEventListener("pointerdown",()=>move(1));
+
+let boosting=false;
+
+document.getElementById("boost")
+.addEventListener("pointerdown",()=>boosting=true);
+
+document.getElementById("boost")
+.addEventListener("pointerup",()=>boosting=false);
+
+document.getElementById("boost")
+.addEventListener("pointercancel",()=>boosting=false);
+
+document.addEventListener("keydown",e=>{
+
+if(e.key==="ArrowLeft")move(-1);
+
+if(e.key==="ArrowRight")move(1);
+
+if(e.code==="Space")boosting=true;
+
+});
+
+document.addEventListener("keyup",e=>{
+
+if(e.code==="Space")boosting=false;
+
+});
+
+function spawnEnemy(){
+
+const el=document.createElement("div");
+
+el.className="enemy";
+
+let lane=25+Math.random()*50;
+
+el.style.left=lane+"%";
+
+el.style.top="-110px";
+
+game.appendChild(el);
+
+enemies.push({
+
+el:el,
+
+y:-110,
+
+speed:2+Math.random()*2
+
+});
+
+}
+
+function crash(enemy){
+
+let a=enemy.el.getBoundingClientRect();
+
+let b=player.getBoundingClientRect();
+
+return(
+
+a.bottom>b.top+15&&
+a.top<b.bottom-15&&
+a.right>b.left+8&&
+a.left<b.right-8
+
+);
+
+}
+
+function gameLoop(time){
+
+if(!running)return;
+
+let dt=Math.min(40,time-lastTime);
+
+lastTime=time;
+
+let stats=carStats[selectedCar];
+
+let baseSpeed=35+(stats.speed*.65)+(engine*4);
+
+if(boosting&&nitro>0){
+
+speed=baseSpeed+55+(nitroLevel*5);
+
+nitro-=0.8;
+
+statusEl.textContent="💨 NITRO BOOST!";
+
+}else{
+
+speed=baseSpeed;
+
+nitro+=0.15;
+
+statusEl.textContent="Avoid traffic and keep racing!";
+
+}
+
+nitro=Math.max(0,Math.min(100,nitro));
+
+speedEl.textContent=Math.round(speed);
+
+nitroFill.style.width=nitro+"%";
+
+if(Math.random()<0.018){
+
+spawnEnemy();
+
+}
+
+enemies.forEach(enemy=>{
+
+enemy.y+=(enemy.speed+(speed/45));
+
+enemy.el.style.top=enemy.y+"px";
+
+if(crash(enemy)){
+
+running=false;
+
+speed=0;
+
+statusEl.textContent="💥 CRASH! Return to the garage and try again.";
+
+}
+
+if(enemy.y>game.clientHeight){
+
+enemy.dead=true;
+
+enemy.el.remove();
+
+earned+=25;
+
+raceMoney.textContent=earned;
+
+}
+
+});
+
+enemies=enemies.filter(e=>!e.dead);
+
+if(earned>=200&&lap<3){
+
+lap++;
+
+earned-=200;
+
+lapEl.textContent=lap;
+
+}
+
+if(lap===3&&earned>=200){
+
+running=false;
+
+money+=500;
+
+updateMoney();
+
+statusEl.textContent="🏆 YOU WON! +K500";
+
+}
+
+requestAnimationFrame(gameLoop);
+
+}
+
+updateMoney();
+
+</script>
+
+</body>
+</html>
